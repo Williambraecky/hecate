@@ -3,7 +3,6 @@ package net.ctlserv.hecate.board;
 import lombok.Getter;
 import lombok.Setter;
 import net.ctlserv.hecate.util.HecateUtil;
-import net.ctlserv.hecate.util.Reflection;
 import net.minecraft.server.v1_7_R4.PacketPlayOutPlayerInfo;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 import net.minecraft.util.com.mojang.authlib.properties.Property;

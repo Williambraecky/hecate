@@ -2,15 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>hecate</artifactId>
-        <groupId>net.ctlserv</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
+    <artifactId>hecateexample</artifactId>
+    <groupId>net.ctlserv</groupId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hecateexample</artifactId>
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <defaultGoal>clean install</defaultGoal>
@@ -72,6 +69,18 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.7.10-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.16</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>net.ctlserv</groupId>
             <artifactId>hecate</artifactId>

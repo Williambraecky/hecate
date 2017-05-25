@@ -6,7 +6,7 @@
 
     <groupId>net.ctlserv</groupId>
     <artifactId>hecate</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -43,9 +43,9 @@
             </plugin>
         </plugins>
     </build>
-    <modules>
+    <!--<modules>
         <module>hecateexample</module>
-    </modules>
+    </modules>-->
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
