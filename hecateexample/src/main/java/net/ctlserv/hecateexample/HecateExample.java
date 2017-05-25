@@ -1,4 +1,4 @@
-package hecateexample;
+package net.ctlserv.hecateexample;
 
 import net.ctlserv.hecate.Hecate;
 import net.ctlserv.hecate.config.HecateConfiguration;
@@ -13,7 +13,7 @@ public class HecateExample extends JavaPlugin {
         HecateConfiguration hecateConfiguration = new HecateConfiguration();
         hecateConfiguration.setUseTab(true);
         hecateConfiguration.setDefaultProvider(new HecateExampleProvider(this));
-        hecateConfiguration.setDefaultRefreshRate(20L);
+        hecateConfiguration.setDefaultRefreshRate(2L);
         new Hecate(this, hecateConfiguration);
     }
 }

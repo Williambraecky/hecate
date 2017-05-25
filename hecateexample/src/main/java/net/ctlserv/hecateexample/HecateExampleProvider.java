@@ -1,4 +1,4 @@
-package hecateexample;
+package net.ctlserv.hecateexample;
 
 import net.ctlserv.hecate.board.HecateBoard;
 import net.ctlserv.hecate.board.HecateBoardProvider;
@@ -50,9 +50,9 @@ public class HecateExampleProvider implements HecateBoardProvider {
         line.setPrefix("§6Count§7: ").setSuffix("§e" + count++);
         line = board.getLine(index++);
         line.setPrefix("§6TabTicks§7: ").setSuffix("§e" + boardTicks);
-        for (int i = 0; i < random.nextInt(10); i ++) {
+        /*for (int i = 0; i < random.nextInt(10); i ++) {
             board.getLine(index++).setPrefix("§6Line§7: ").setSuffix("§e" + i);
-        }
+        }*/
         board.getLine(index).spacer();
         return index;
     }
