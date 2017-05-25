@@ -32,13 +32,13 @@ public class HecateExampleProvider implements HecateBoardProvider {
 
     @Override
     public void gatherTabUpdates(Player boardOwner, HecateBoard board, int boardTicks) {
-        //if (boardTicks == 0) {
+        if (boardTicks == 0) {
             for (int row = 1; row <= (board.is1_8() ? 4 : 3); row++) {
                 for (int column = 1; column <= 20; column++) {
                     board.getTabByPosition(row, column).setPrefix("§6Row "+ row).setSuffix(" §6Column " + column);
                 }
             }
-        //}
+        }
     }
 
     @Override
