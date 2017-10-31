@@ -20,18 +20,15 @@ import java.util.UUID;
 @Getter
 public class HecateBoard {
 
-    private static HecateSidebarLine fakeLine = new HecateSidebarLine(666);
-    private static HecateTabEntry fakeTabEntry = new HecateTabEntry(666, UUID.randomUUID());
-
     private Hecate hecate;
     private Player player;
     private boolean removed = false;
     private boolean visible = true;
+    private boolean is1_8 = false;
     private String title = "";
     private Objective objective;
     private BukkitRunnable updater;
-
-    private int protocol, boardTicks = 0; //Player version
+    private int boardTicks = 0;
     private HecateBoardProvider currentBoardProvider;
     private Scoreboard scoreboard;
     private HecateTabEntry[] tab;
@@ -41,7 +38,7 @@ public class HecateBoard {
     public HecateBoard(Hecate hecate, Player player) {
         this.hecate = hecate;
         this.player = player;
-        this.protocol = ((CraftPlayer)player).getHandle().playerConnection.networkManager.getVersion();
+        this.is1_8 = ((CraftPlayer) player).getHandle().playerConnection.networkManager.getVersion() >= 47;
 
         if (player.getScoreboard() != null
                 && player.getScoreboard() != hecate.getPlugin().getServer().getScoreboardManager().getMainScoreboard()) {
@@ -54,7 +51,8 @@ public class HecateBoard {
             scoreboard.registerNewObjective("buffer", "dummy");
         }
         objective = scoreboard.getObjective("buffer");
-                initSidebar();
+        initSidebar();
+
         if (hecate.getHecateConfiguration().isUseTab()) {
             initTab();
         }
@@ -75,89 +73,55 @@ public class HecateBoard {
             }
             if (hecate.getHecateConfiguration().isUseTab()) {
                 //We can directly update the tab when the user does .setPrefix() etc.. so we don't need anything more like the sidebar
-                provider.gatherTabUpdates(getPlayer(), this, getBoardTicks());
-                updateTab();
+                updateTab(provider);
 
             }
             boardTicks += 1;
         }
     }
 
-    private void updateTab() {
-        if (currentBoardProvider == null) {
+    private synchronized void updateTab(HecateBoardProvider provider) {
+        if (provider == null || removed) {
             return;
         }
-        for (HecateTabEntry entry : tab) {
-            if (entry.isUpdated()) {
-                Team t = getTeam(entry.getName());
-                if (t == null) {
-                    t = registerNewTeam(entry.getName());
-                }
-                if (entry.getPrefix() != null && !t.getPrefix().equalsIgnoreCase(entry.getPrefix())) {
-                    t.setPrefix(entry.getPrefix());
-                }
-                if (entry.getSuffix() != null && !t.getSuffix().equalsIgnoreCase(entry.getSuffix())) {
-                    t.setSuffix(entry.getSuffix());
-                }
-                if (!t.hasEntry(entry.getName())) {
-                    t.addEntry(entry.getName());
-                }
-                entry.setUpdated(false);
-            }
-        }
+        provider.gatherTabUpdates(getPlayer(), this, getBoardTicks());
     }
 
-    private void updateLines(HecateBoardProvider provider) {
-        int size = provider.gatherSidebarUpdates(getPlayer(), this, getBoardTicks());
-        if (!title.equals(provider.getTitle(getPlayer()))){
+    private int currentLine = 0;
+    private boolean wrap = false;
+
+    public void wrapScoreboardWithSpacersIfNotEmpty() {
+        wrap = true;
+    }
+
+    public HecateSidebarLine getNextLine() {
+        if (wrap && currentLine == 0) {
+            getLine(1).setScore(16).spacer();
+            currentLine = 1;
+        }
+        currentLine++;
+        return getLine(currentLine).setScore(16 - (currentLine - 1));
+    }
+
+    private synchronized void updateLines(HecateBoardProvider provider) {
+        if (removed) {
+            return;
+        }
+        if (!title.equals(provider.getTitle(getPlayer()))) {
             objective.setDisplayName(provider.getTitle(getPlayer()));
             title = provider.getTitle(getPlayer());
         }
-        int start = (16 - (16 - (size + 1)));
-        for (int i = 1; i != 16; i++){
-            HecateSidebarLine entry = getLine(i);
-            Team team = entry.getTeam();
-            if (team == null){
-                hecate.getPlugin().getLogger().info("Team for line: " + i + " wasn't found for player: " + player.getName());
-                continue;
-            }
-            if (i > size){
-                if (!entry.isBlank()){
-                    entry.blank();
-                }
-                if (entry.isBlank() && entry.isUpdated()){
-                    scoreboard.resetScores(entry.getOldName());
-                    team.removeEntry(entry.getOldName());
-                    entry.setOldName("");
-                }
-                continue;
-            }
-            int score = start - i;
-            if (objective.getScore(entry.getName()).getScore() != score){
-                objective.getScore(entry.getName()).setScore(score);
-            }
-            if (!entry.isUpdated()){
-                continue;
-            }
-            String prefix = entry.getPrefix();
-            if (!team.getPrefix().equals(prefix)){
-                team.setPrefix(prefix);
-            }
-            String suffix = entry.getSuffix();
-            if (!team.getSuffix().equals(suffix)){
-                team.setSuffix(suffix);
-            }
-            if (entry.hasEntryNameChanged()){
-                team.removeEntry(entry.getOldName());
-                scoreboard.resetScores(entry.getOldName());
-
-                if (!team.hasEntry(entry.getName())){
-                    team.addEntry(entry.getName());
-                }
-
-                entry.setOldName(entry.getName());
-            }
-            entry.setUpdated(false);
+        currentLine = 0;
+        wrap = false;
+        provider.gatherSidebarUpdates(getPlayer(), this, getBoardTicks());
+        if (wrap) {
+            getNextLine().setScore(16 - (currentLine - 1)).spacer();
+        }
+        currentLine++;
+        HecateSidebarLine line;
+        while ((line = getLine(currentLine)).getScore() != -1) {
+            line.setScore(-1);
+            currentLine++;
         }
     }
 
@@ -216,16 +180,15 @@ public class HecateBoard {
 
     public void initSidebar() {
         sidebar = new HecateSidebarLine[16];
-        for (int i = 1; i <= 16; i++){
+        for (int i = 1; i <= 16; i++) {
             sidebar[i - 1] = new HecateSidebarLine(i);
-            sidebar[i - 1].setTeam(registerNewTeam("LINE_" + i));
+            sidebar[i - 1].setTeamAndObjective(registerNewTeam("LINE_" + i), objective);
         }
     }
 
-    public HecateSidebarLine getLine(int position){
-        if (position > 16 || position < 1 || sidebar == null){
-            //This is so that it doesn't throw an error for people
-            return fakeLine;
+    private HecateSidebarLine getLine(int position) {
+        if (position > 16 || position < 1 || sidebar == null) {
+            return null;
         }
         return sidebar[position - 1];
     }
@@ -233,37 +196,43 @@ public class HecateBoard {
     public void initTab() {
         tab = new HecateTabEntry[80];
         HecateTabEntry entry;
-        for (int i = 0; i < 80; i++){
+        for (int i = 0; i < 80; i++) {
             //Lazy making of uuid
-            if (i < 10){
+            if (i < 10) {
                 entry = new HecateTabEntry(i, UUID.fromString("00000000-0000-0000-0000-00000000000" + i));
-            }else {
+            } else {
                 entry = new HecateTabEntry(i, UUID.fromString("00000000-0000-0000-0000-0000000000" + i));
             }
             tab[i] = entry;
             entry.send(player);
-            if (is1_8()){
+            if (is1_8()) {
+                entry.setTeam(getTeam(entry.getName()));
                 entry.setPrefix(HecateUtil.formatNumberToScoreboardString(i));
             }
         }
     }
 
-    public HecateTabEntry getTabByPosition(int column, int row){
-        if (!hecate.getHecateConfiguration().isUseTab() || column <= 0 || column > 4 || row > 20 || row <= 0 || tab == null){
-            return fakeTabEntry;
+    public HecateTabEntry getTabByPosition(int column, int row) {
+        if (!hecate.getHecateConfiguration().isUseTab() || column <= 0 || column > 4 || row > 20 || row <= 0 || tab == null) {
+            return null;
         }
         column -= 1;
         row -= 1;
-        if (!is1_8()){
-            int result = (row * 3) + column;
-            return tab[result];
+        int result;
+        if (!is1_8()) {
+            result = (row * 3) + column;
+        } else {
+            result = column * 20 + row;
         }
-        int result = column * 20 + row;
-        return tab[result];
+        HecateTabEntry hecateTabEntry = tab[result];
+        if (hecateTabEntry != null && hecateTabEntry.getTeam() == null) {
+            hecateTabEntry.setTeam(getTeam(hecateTabEntry.getName()));
+        }
+        return hecateTabEntry;
     }
 
     public boolean is1_8() {
-        return protocol >= 47;
+        return is1_8;
     }
 
     public void onPlayerJoin(Player player) {
@@ -319,21 +288,11 @@ public class HecateBoard {
     }
 
     public void remove() {
-        //TODO: clear board
         removed = true;
         player = null;
         if (updater != null) {
             updater.cancel();
         }
         updater = null;
-        if (scoreboard != null) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    scoreboard.getTeams().forEach(Team::unregister);
-                    scoreboard.getObjectives().forEach(Objective::unregister);
-                }
-            }.runTaskAsynchronously(hecate.getPlugin());
-        }
     }
 }

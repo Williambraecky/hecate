@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.ctlserv.hecate.util.HecateUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Team;
 
 /**
@@ -13,34 +14,35 @@ import org.bukkit.scoreboard.Team;
 @Setter
 public class HecateSidebarLine {
 
-    private String prefix = "", name = "", suffix = "";
-    private boolean isUpdated = false;
+    private String name = "";
     private final int position;
     private int score = -1;
-    private final String teamName;
     private String oldName;
     private Team team;
+    private Objective objective;
 
     HecateSidebarLine(int position){
         this.position = position;
-        teamName = "LINE_" + position;
     }
 
-    public HecateSidebarLine(String prefix, String name, String suffix, int position){
-        this.prefix = prefix;
-        this.name = name;
-        this.suffix = suffix;
-        this.position = position;
-        teamName = "LINE_" + position;
+    HecateSidebarLine setScore(int score) {
+        if (this.score != score) {
+            if (score == -1) {
+                team.getScoreboard().resetScores(getName());
+            } else {
+                objective.getScore(getName()).setScore(score);
+            }
+        }
+        this.score = score;
+        return this;
     }
 
     public HecateSidebarLine setPrefix(String prefix){
-        if (!this.prefix.equals(prefix)){
+        if (!team.getPrefix().equals(prefix)){
             if (prefix.length() > 16){
                 prefix = prefix.substring(0, 16);
             }
-            this.prefix = prefix;
-            isUpdated = true;
+            team.setPrefix(prefix);
         }
         return this;
     }
@@ -50,15 +52,25 @@ public class HecateSidebarLine {
             if (name.length() > 16){
                 name = name.substring(0, 16);
             }
-            this.oldName = this.name;
+            if (team.hasEntry(this.name)) {
+                team.removeEntry(this.name);
+                team.getScoreboard().resetScores(this.name);
+            }
+            team.addEntry(name);
+            objective.getScore(name).setScore(score);
             this.name = name;
-            isUpdated = true;
         }
         return this;
     }
 
-    public boolean hasEntryNameChanged(){
-        return oldName != getName();
+    public HecateSidebarLine setSuffix(String suffix){
+        if (!team.getSuffix().equals(suffix)){
+            if (suffix.length() > 16){
+                suffix = suffix.substring(0, 16);
+            }
+            team.setSuffix(suffix);
+        }
+        return this;
     }
 
     public String getName() {
@@ -68,25 +80,10 @@ public class HecateSidebarLine {
         return name;
     }
 
-    public HecateSidebarLine setSuffix(String suffix){
-        if (!this.suffix.equals(suffix)){
-            if (suffix.length() > 16){
-                suffix = suffix.substring(0, 16);
-            }
-            this.suffix = suffix;
-            isUpdated = true;
-        }
-        return this;
-    }
-
     public void blank(){
         setPrefix("");
-        setName("");
+        setName(HecateUtil.formatNumberToScoreboardString(position) + ChatColor.RESET);
         setSuffix("");
-    }
-
-    public boolean isBlank(){
-        return prefix.equals("") && name.equals("") && suffix.equals("");
     }
 
     private static final String STRAIGHT_LINE = "------------";
@@ -97,4 +94,8 @@ public class HecateSidebarLine {
         setSuffix(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH.toString() + STRAIGHT_LINE.substring(0, 7));
     }
 
+    public void setTeamAndObjective(Team team, Objective objective) {
+        this.team = team;
+        this.objective = objective;
+    }
 }

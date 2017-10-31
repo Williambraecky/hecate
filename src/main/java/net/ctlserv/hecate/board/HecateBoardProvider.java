@@ -13,6 +13,6 @@ public interface HecateBoardProvider {
 
     void gatherTabUpdates(Player boardOwner, HecateBoard board, int boardTicks);
 
-    int gatherSidebarUpdates(Player boardOwner, HecateBoard board, int boardTicks);
+    void gatherSidebarUpdates(Player boardOwner, HecateBoard board, int boardTicks);
 
 }

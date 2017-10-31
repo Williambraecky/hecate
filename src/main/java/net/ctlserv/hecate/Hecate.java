@@ -24,7 +24,7 @@ public class Hecate {
 
     public Hecate(Plugin plugin, HecateConfiguration configuration) {
         if (instance != null) {
-            throw new UnsupportedOperationException("A running hecate has been found, there is currently no support for multiple instances.");
+            throw new UnsupportedOperationException("A running hecate has been found, there is no support for multiple instances.");
         }
         instance = this;
         this.plugin = plugin;
@@ -50,8 +50,7 @@ public class Hecate {
     }
 
     public HecateBoard setBoard(UUID uuid, HecateBoard board) {
-        hecateBoardMap.put(uuid, board);
-        return board;
+        return hecateBoardMap.put(uuid, board);
     }
 
     public HecateBoard removeBoard(Player player) {
