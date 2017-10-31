@@ -13,7 +13,7 @@ public class HecateExample extends JavaPlugin {
         HecateConfiguration hecateConfiguration = new HecateConfiguration();
         hecateConfiguration.setUseTab(true);
         hecateConfiguration.setDefaultProvider(new HecateExampleProvider(this));
-        hecateConfiguration.setDefaultRefreshRate(2L);
+        hecateConfiguration.setDefaultRefreshRate(5L);
         new Hecate(this, hecateConfiguration);
     }
 }
