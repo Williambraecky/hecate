@@ -1,5 +1,6 @@
 package net.ctlserv.hecate.board;
 
+import lombok.NonNull;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -12,14 +13,14 @@ public class HecateBoardRunnable extends BukkitRunnable {
     private HecateBoard hecateBoard;
     private HecateBoardProvider provider;
 
-    HecateBoardRunnable(HecateBoard hecateBoard, HecateBoardProvider provider) {
+    HecateBoardRunnable(@NonNull HecateBoard hecateBoard,@NonNull HecateBoardProvider provider) {
         this.hecateBoard = hecateBoard;
         this.provider = provider;
     }
 
     @Override
     public void run() {
-        if (hecateBoard.isRemoved() || hecateBoard == null || provider == null || provider != hecateBoard.getCurrentBoardProvider()) {
+        if (hecateBoard == null || hecateBoard.isRemoved() || provider == null || provider != hecateBoard.getCurrentBoardProvider()) {
             cancel();
             return;
         }
