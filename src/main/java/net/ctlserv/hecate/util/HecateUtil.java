@@ -22,7 +22,7 @@ public class HecateUtil {
             sb.append("§0");
         }
         for (int j = 0; j < s.length(); j++) {
-            sb.append("§" + s.substring(j, j + 1));
+            sb.append("§").append(s.substring(j, j + 1));
         }
         return sb.toString();
     }

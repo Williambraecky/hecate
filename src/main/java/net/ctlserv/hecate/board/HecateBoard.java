@@ -25,7 +25,6 @@ public class HecateBoard {
     private boolean removed = false;
     private boolean visible = true;
     private boolean is1_8 = false;
-    private String title = "";
     private Objective objective;
     private BukkitRunnable updater;
     private int boardTicks = 0;
@@ -104,17 +103,17 @@ public class HecateBoard {
     }
 
     private synchronized void updateLines(HecateBoardProvider provider) {
-        if (removed) {
+        if (provider == null || removed) {
             return;
         }
-        if (!title.equals(provider.getTitle(getPlayer()))) {
-            objective.setDisplayName(provider.getTitle(getPlayer()));
-            title = provider.getTitle(getPlayer());
+        String title = provider.getTitle(getPlayer());
+        if (!objective.getDisplayName().equals(title)) {
+            objective.setDisplayName(title);
         }
         currentLine = 0;
         wrap = false;
         provider.gatherSidebarUpdates(getPlayer(), this, getBoardTicks());
-        if (wrap) {
+        if (wrap && currentLine < 16) {
             getNextLine().setScore(16 - (currentLine - 1)).spacer();
         }
         currentLine++;
@@ -239,15 +238,7 @@ public class HecateBoard {
         if (currentBoardProvider == null) {
             return;
         }
-        String prefix = currentBoardProvider.getPrefixFor(this.player, player);
-        if (prefix == null || prefix.equalsIgnoreCase("")) {
-            if (hecate.getHecateConfiguration().isUseTab() && is1_8()) {
-                prefix = HecateUtil.formatNumberToScoreboardString(100);
-            } else {
-                return;
-            }
-        }
-        updatePrefix(player, prefix);
+        updatePrefix(player);
     }
 
     public void onPlayerQuit(Player player) {
@@ -292,7 +283,7 @@ public class HecateBoard {
         player = null;
         if (updater != null) {
             updater.cancel();
+            updater = null;
         }
-        updater = null;
     }
 }
