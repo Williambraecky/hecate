@@ -14,8 +14,9 @@ import org.bukkit.scoreboard.Team;
 @Setter
 public class HecateSidebarLine {
 
-    private String name = "";
+    private static final String STRAIGHT_LINE = "------------";
     private final int position;
+    private String name = "";
     private int score = -1;
     private String oldName;
     private Team team;
@@ -47,22 +48,6 @@ public class HecateSidebarLine {
         return this;
     }
 
-    public HecateSidebarLine setName(String name) {
-        if (!this.name.equals(name)) {
-            if (name.length() > 16) {
-                name = name.substring(0, 16);
-            }
-            if (team.hasEntry(this.name)) {
-                team.removeEntry(this.name);
-                team.getScoreboard().resetScores(this.name);
-            }
-            team.addEntry(name);
-            objective.getScore(name).setScore(score);
-            this.name = name;
-        }
-        return this;
-    }
-
     public HecateSidebarLine setSuffix(String suffix) {
         if (!team.getSuffix().equals(suffix)) {
             if (suffix.length() > 16) {
@@ -80,13 +65,27 @@ public class HecateSidebarLine {
         return name;
     }
 
+    public HecateSidebarLine setName(String name) {
+        if (!this.name.equals(name)) {
+            if (name.length() > 16) {
+                name = name.substring(0, 16);
+            }
+            if (team.hasEntry(this.name)) {
+                team.removeEntry(this.name);
+                team.getScoreboard().resetScores(this.name);
+            }
+            team.addEntry(name);
+            objective.getScore(name).setScore(score);
+            this.name = name;
+        }
+        return this;
+    }
+
     public void blank() {
         setPrefix("");
         setName(HecateUtil.formatNumberToScoreboardString(position) + ChatColor.RESET);
         setSuffix("");
     }
-
-    private static final String STRAIGHT_LINE = "------------";
 
     public void spacer() {
         setPrefix(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH.toString() + STRAIGHT_LINE);

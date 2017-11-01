@@ -32,7 +32,8 @@ public class HecateBoard {
     private Scoreboard scoreboard;
     private HecateTabEntry[] tab;
     private HecateSidebarLine[] sidebar;
-
+    private int currentLine = 0;
+    private boolean wrap = false;
 
     public HecateBoard(Hecate hecate, Player player) {
         this.hecate = hecate;
@@ -85,9 +86,6 @@ public class HecateBoard {
         }
         provider.gatherTabUpdates(getPlayer(), this, getBoardTicks());
     }
-
-    private int currentLine = 0;
-    private boolean wrap = false;
 
     public void wrapScoreboardWithSpacersIfNotEmpty() {
         wrap = true;
