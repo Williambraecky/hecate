@@ -8,7 +8,10 @@ import net.ctlserv.hecate.util.HecateUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by Williambraecky on 25-05-17.

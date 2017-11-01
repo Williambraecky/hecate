@@ -118,7 +118,7 @@ public class HecateBoard {
         }
         currentLine++;
         HecateSidebarLine line;
-        while ((line = getLine(currentLine))!= null && line.getScore() != -1) {
+        while ((line = getLine(currentLine)) != null && line.getScore() != -1) {
             line.setScore(-1);
             currentLine++;
         }

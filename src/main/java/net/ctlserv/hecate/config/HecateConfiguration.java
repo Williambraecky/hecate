@@ -3,6 +3,7 @@ package net.ctlserv.hecate.config;
 import lombok.Getter;
 import lombok.Setter;
 import net.ctlserv.hecate.board.HecateBoardProvider;
+
 /**
  * Created by Williambraecky on 25-05-17.
  */

@@ -21,7 +21,7 @@ public class HecateSidebarLine {
     private Team team;
     private Objective objective;
 
-    HecateSidebarLine(int position){
+    HecateSidebarLine(int position) {
         this.position = position;
     }
 
@@ -37,9 +37,9 @@ public class HecateSidebarLine {
         return this;
     }
 
-    public HecateSidebarLine setPrefix(String prefix){
-        if (!team.getPrefix().equals(prefix)){
-            if (prefix.length() > 16){
+    public HecateSidebarLine setPrefix(String prefix) {
+        if (!team.getPrefix().equals(prefix)) {
+            if (prefix.length() > 16) {
                 prefix = prefix.substring(0, 16);
             }
             team.setPrefix(prefix);
@@ -47,9 +47,9 @@ public class HecateSidebarLine {
         return this;
     }
 
-    public HecateSidebarLine setName(String name){
-        if (!this.name.equals(name)){
-            if (name.length() > 16){
+    public HecateSidebarLine setName(String name) {
+        if (!this.name.equals(name)) {
+            if (name.length() > 16) {
                 name = name.substring(0, 16);
             }
             if (team.hasEntry(this.name)) {
@@ -63,9 +63,9 @@ public class HecateSidebarLine {
         return this;
     }
 
-    public HecateSidebarLine setSuffix(String suffix){
-        if (!team.getSuffix().equals(suffix)){
-            if (suffix.length() > 16){
+    public HecateSidebarLine setSuffix(String suffix) {
+        if (!team.getSuffix().equals(suffix)) {
+            if (suffix.length() > 16) {
                 suffix = suffix.substring(0, 16);
             }
             team.setSuffix(suffix);
@@ -80,7 +80,7 @@ public class HecateSidebarLine {
         return name;
     }
 
-    public void blank(){
+    public void blank() {
         setPrefix("");
         setName(HecateUtil.formatNumberToScoreboardString(position) + ChatColor.RESET);
         setSuffix("");
@@ -88,7 +88,7 @@ public class HecateSidebarLine {
 
     private static final String STRAIGHT_LINE = "------------";
 
-    public void spacer(){
+    public void spacer() {
         setPrefix(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH.toString() + STRAIGHT_LINE);
         setName(HecateUtil.formatNumberToScoreboardString(position) + ChatColor.RESET);
         setSuffix(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH.toString() + STRAIGHT_LINE.substring(0, 7));

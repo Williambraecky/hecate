@@ -1,7 +1,6 @@
 package net.ctlserv.hecate.board;
 
 import com.google.common.base.Preconditions;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.ctlserv.hecate.util.HecateUtil;
