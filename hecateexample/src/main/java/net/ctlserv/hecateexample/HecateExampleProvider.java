@@ -31,8 +31,8 @@ public class HecateExampleProvider implements HecateBoardProvider {
     }
 
     @Override
-    public void gatherTabUpdates(Player boardOwner, HecateBoard board, int boardTicks) {
-        if (boardTicks == 0) {
+    public void gatherTabUpdates(Player boardOwner, HecateBoard board) {
+        if (board.getBoardTicks() == 0) {
             for (int row = 1; row <= (board.is1_8() ? 4 : 3); row++) {
                 for (int column = 1; column <= 20; column++) {
                     board.getTabByPosition(row, column).setText("§6Row " + row + " Column " + column);
@@ -42,15 +42,16 @@ public class HecateExampleProvider implements HecateBoardProvider {
     }
 
     @Override
-    public void gatherSidebarUpdates(Player boardOwner, HecateBoard board, int boardTicks) {
+    public void gatherSidebarUpdates(Player boardOwner, HecateBoard board) {
         HecateSidebarLine line;
         board.wrapScoreboardWithSpacersIfNotEmpty();
         line = board.getNextLine();
         line.setPrefix("§6Count§7: ").setSuffix("§e" + count++);
         line = board.getNextLine();
-        line.setPrefix("§6TabTicks§7: ").setSuffix("§e" + boardTicks);
-        for (int i = 0; i < count % 10; i ++) {
-            board.getNextLine().setPrefix("§6Line§7: ").setSuffix(ChatColor.values()[count % 10].toString() + i);
-        }
+        line.setPrefix("§6TabTicks§7: ").setSuffix("§e" + board.getBoardTicks());
+        board.getNextLine().blank();
+        board.getNextLine().setPrefix("§6X: ").setSuffix("§e" + boardOwner.getLocation().getBlockX());
+        board.getNextLine().setPrefix("§6Y: ").setSuffix("§e" + boardOwner.getLocation().getBlockY());
+        board.getNextLine().setPrefix("§6Z: ").setSuffix("§e" + boardOwner.getLocation().getBlockZ());
     }
 }

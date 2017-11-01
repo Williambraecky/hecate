@@ -84,7 +84,7 @@ public class HecateBoard {
         if (provider == null || removed) {
             return;
         }
-        provider.gatherTabUpdates(getPlayer(), this, getBoardTicks());
+        provider.gatherTabUpdates(getPlayer(), this);
     }
 
     public void wrapScoreboardWithSpacersIfNotEmpty() {
@@ -110,7 +110,7 @@ public class HecateBoard {
         }
         currentLine = 0;
         wrap = false;
-        provider.gatherSidebarUpdates(getPlayer(), this, getBoardTicks());
+        provider.gatherSidebarUpdates(getPlayer(), this);
         if (wrap && currentLine < 16) {
             getNextLine().setScore(16 - (currentLine - 1)).spacer();
         }

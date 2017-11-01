@@ -11,8 +11,8 @@ public interface HecateBoardProvider {
 
     String getPrefixFor(Player boardOwner, Player target);
 
-    void gatherTabUpdates(Player boardOwner, HecateBoard board, int boardTicks);
+    void gatherTabUpdates(Player boardOwner, HecateBoard board);
 
-    void gatherSidebarUpdates(Player boardOwner, HecateBoard board, int boardTicks);
+    void gatherSidebarUpdates(Player boardOwner, HecateBoard board);
 
 }
