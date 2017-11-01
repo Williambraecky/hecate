@@ -33,7 +33,7 @@ public class Hecate {
         Collection<Player> collection = (Collection<Player>) HecateUtil.getOnlinePlayer();
         for (Player player : collection) {
             setBoard(player.getUniqueId(), new HecateBoard(this, player));
-            getBoards().forEach(hecateBoard -> hecateBoard.onPlayerJoin(player));
+            collection.forEach(player1 -> getBoard(player.getUniqueId()).onPlayerJoin(player1));
         }
     }
 
