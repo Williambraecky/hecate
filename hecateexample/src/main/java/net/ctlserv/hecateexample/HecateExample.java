@@ -4,6 +4,7 @@ import net.ctlserv.hecate.Hecate;
 import net.ctlserv.hecate.config.HecateConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+
 /**
  * Created by Williambraecky on 25-05-17.
  */
